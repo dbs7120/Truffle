@@ -4,7 +4,7 @@
 
 > Truth + Raffle 의 합성어로 한정판에 대한 구매권 응모(래플) 중개서비스
 
-![](https://img.shields.io/badge/vue.js-2.6.11-green)![](https://img.shields.io/badge/SpringBoot-2.4.2-yellow)![](https://img.shields.io/badge/SpringBootSecurity-pink)![](https://img.shields.io/badge/iamport-0.2.14-blue)![](https://img.shields.io/badge/Swagger2-2.6.1-green)![](https://img.shields.io/badge/MySQL-8.0.23-green)![](https://img.shields.io/badge/AWS-EC2-red)![](https://img.shields.io/badge/ubuntu-16.04-orange)![](https://img.shields.io/badge/Docker-blue)![](https://img.shields.io/badge/Jenkins-red)![](https://img.shields.io/badge/JIRA-blue)![](https://img.shields.io/badge/SonarQube-yellow)
+![](https://img.shields.io/badge/vue.js-2.6.11-green) ![](https://img.shields.io/badge/SpringBoot-2.4.2-yellow) ![](https://img.shields.io/badge/SpringBootSecurity-pink) ![](https://img.shields.io/badge/iamport-0.2.14-blue) ![](https://img.shields.io/badge/Swagger2-2.6.1-green) ![](https://img.shields.io/badge/MySQL-8.0.23-green) ![](https://img.shields.io/badge/AWS-EC2-red) ![](https://img.shields.io/badge/ubuntu-16.04-orange) ![](https://img.shields.io/badge/Docker-blue) ![](https://img.shields.io/badge/Jenkins-red) ![](https://img.shields.io/badge/JIRA-blue) ![](https://img.shields.io/badge/SonarQube-yellow)
 
 
 
@@ -125,57 +125,15 @@ npm run serve
 #### 회원가입
 전화번호 인증 API를 호출후 회원가입 절차 진행, 비밀번호는 SpringSecurity로 암호화하여 DB에 저장
 
-```mermaid
-sequenceDiagram
-
-SignUpPage->>+SpringBoot:verifyPhoneNumber(phone)
-SpringBoot->>+coolsms API:휴대폰번호인증서비스호출
-coolsms API-->>-SpringBoot:랜덤한숫자4자리값 반환
-SpringBoot-->>-SignUpPage:Stirng:verifyPhoneNumber(phone)
-SignUpPage->>SignUpPage:반환된4자리값과 문자로수신한 4자리값 일치 비교
-SignUpPage->>+SpringBoot:signUp(accountInfo)
-SpringBoot->>SpringBoot:setPassword(passwordEncoding(password))
-SpringBoot->>+Database:signUp(accountInfo)
-Database->>Database:insert(accountInfo)
-Database-->>-SpringBoot:insert result
-SpringBoot-->>-SignUpPage:"result message"
-```
+![image-20210418145700957](README.assets/image-20210418145700957.png)
 
 #### 이벤트 전체조회
 
-```mermaid
-sequenceDiagram
-
-loop event_id
-	EventListPage->>+AWS Docker Volume:imageRequest
-	AWS Docker Volume-->>-EventListPage:thumnail Image
-end
- Note left of AWS Docker Volume:요청주소<br/>https://j4d110.p.ssafy.io/truffle/event/selectEventImgFileEventID?event_id=
-
-EventListPage->>+SpringBoot:all()
-SpringBoot->>+Database:all()
-Database->>Database:select all event
-Database-->>-SpringBoot:select result
-SpringBoot-->>-EventListPage:List<EventDto>
-```
+![image-20210418145713727](README.assets/image-20210418145713727.png)
 
 #### 당첨자 구매진행
 
-```mermaid
-sequenceDiagram
-EventResultPage->>PaymentPage:당첨자정보
-PaymentPage->>PaymentPage:iamport 결제모듈 호출
-PaymentPage->>+SpringBoot:verifyIamport(결제 고유번호)
-SpringBoot->>+iamport Server:paymentByImpUid(결제 고유번호)
-iamport Server-->>-SpringBoot:Payment 정보
-SpringBoot-->>-PaymentPage:Payment 정보
-PaymentPage->>PaymentPage:결제검증확인(결제 status체크)
-PaymentPage->>+SpringBoot:completePayment(orderDto)
-SpringBoot->>+Database:completePayment(orderDto)
-Database->>Database:insert order
-Database-->>-SpringBoot:insert result
-SpringBoot-->>-PaymentPage:"result message"
-```
+![image-20210418145726125](README.assets/image-20210418145726125.png)
 
 
 ------
@@ -184,38 +142,5 @@ SpringBoot-->>-PaymentPage:"result message"
 
 ### 개발일정
 
-```mermaid
-gantt
-    dateFormat  YYYY-MM-DD
-    title       Truffle
-
-    section 준비/기획(SUB-PRJ-1,2)
-    특화프로젝트 팀구성 :done, 2021-03-01,1d
-    블록체인 기술학습 :done, 2021-03-01,7d
-    아이디어 기획 :done, 2021-03-01,9d
-    산출물 제작 :done, 2021-03-10,3d
-
-
-    section 개발환경 설정(SUB-PRJ-2)
-    개발업무분담 :crit, done, 2021-03-15,1d
-
-    section 파트별개발진행(SUB-PRJ-3)
-    파트별 개발 시작/진행 : active, 2021-03-17,2021-04-08
-    프론트엔드 UI/UX구현 :done, 2021-03-17,2021-03-30
-    백엔드 REST API 구현 :done, 2021-03-17,2021-03-30
-	업무재분담 :crit, 2021-03-29,1d
-    배포 자동화환경 구축 :done, 2021-03-24,2021-03-26
-	프론트엔드 배포 :done, 2021-03-26,2021-03-28
-    백엔드 배포 :done, 2021-03-30,2021-03-31
-    기능별 연결 진행 :active, 2021-03-30,2021-04-06
-    백엔드 추가 기능(결제,유저인증,이미지서버) 구현 :done, 2021-03-31,2021-04-05
-        
-    section 기타
-    팀별 멘토링 1차 :done, 2021-03-16,1d
-    팀별 멘토링 2차 :done, 2021-04-02,1d
-    산출물 제작 및 정리 :active, 2021-04-02,2021-04-07
-    UCC기획 및 제작 : 2021-04-05,2021-04-08
-    발표준비 :crit, 2021-04-08,1d
-    프로젝트 최종발표 :crit, 2021-04-09,1d
-```
+![image-20210418150106550](README.assets/image-20210418150106550.png)
 
